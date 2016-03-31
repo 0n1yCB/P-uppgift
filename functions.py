@@ -11,9 +11,9 @@ def newCustomer():
 	if random.randrange(0,6) == 5:
 		return True
 
-def enterCustomer(storeOpen, queue, beingServed, time, kundnr):
+def enterCustomer():
 	if newCustomer() and storeOpen:														# kollar varje minut om en nu kund kommer in
-		if queue.isEmpty() and not beingServed:				
+		if queue.isEmpty() and not beingServed:
 			customer = classes.person(kundnr)
 			beingServed = True
 			print(time.get() , " kommer kund " , customer.kundnr , " in och blir genast betjänad.")
@@ -24,7 +24,7 @@ def enterCustomer(storeOpen, queue, beingServed, time, kundnr):
 			kundnr += 1
 			print(time.get() , " kommer kund " , kundnr-1 , " in och ställer sig i kön som nr." , queue.length)
 
-def updateCheck(queue, beingServed, customer, consumedTime, time):
+def updateCheck():
 	if beingServed is True:									# om en kund betjänas så ökas tiden det har tagit för ärendena
 		if consumedTime == 2*customer.errands:				# om den konsumerade tiden nått 2 * ärenden minuter lämnar kunden disken och en kund hämtas från kön.
 			if not queue.isEmpty():
