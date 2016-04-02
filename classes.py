@@ -29,10 +29,13 @@ class person():
 			while random.randrange(0,2) == 1:
 				errands += 1
 			return errands
+		def isRobber():
+			return random.randrange(0,1000) == 0
 
 		self.errands = noErrands()
 		self.kundnr = custNo
 		self.consumedTime = consumedTime
+		self.isRobber = isRobber()
 
 	def canLeave(self):
 		return self.consumedTime >= 2*self.errands
@@ -77,3 +80,8 @@ class queue():
 			return True
 		else:
 			return False
+
+	def empty(self):
+		self.top = None
+		self.last = None
+		self.length = 0

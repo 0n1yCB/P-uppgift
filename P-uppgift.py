@@ -1,5 +1,5 @@
 #from queueADT import *
-from functions import *
+#from functions import *
 import classes
 import time
 import random
@@ -10,22 +10,34 @@ def enterCustomer():
 	global customer
 	global storeOpen
 	global queue
+	global PRkick
 
-	def newCustomer():
-		if random.randrange(0,5) == 0:
-			return True
+	def probGen(maxno):
+		return random.randrange(0,maxno) == 0
 
-	if newCustomer() and storeOpen:														# kollar varje minut om en nu kund kommer in
+	if probGen(100//PRkick) and storeOpen:														# kollar varje minut om en nu kund kommer in
+		newCustomer = classes.person(kundnr)
+		if newCustomer.isRobber:
+			print(time, "Butiken rånas! Kön töms.")
+			queue.empty()
+			if probGen(random.randrange(1,20)):
+				PRkick = 51
+				print("Fru Franco besegrade rånaren! Hype!")
+			else:
+				print("Mörp. Fru Franco blev besegrad. rip.")
+				PRkick = 4
+
 		if queue.isEmpty() and not beingServed:
-			customer = classes.person(kundnr, -1)
+			customer = newCustomer
+			customer.consumedTime = -1
 			print(time , "kommer kund" , customer.kundnr , "in och blir genast betjänad.")
-			kundnr += 1
 			beingServed = True
 
 		else:												# annars ställs personen i kön
-			queue.put(classes.person(kundnr))
-			kundnr += 1
+			queue.put(newCustomer)
 			print(time , "kommer kund" , kundnr-1 , "in och ställer sig i kön som nr." , queue.length)
+
+		kundnr += 1
 
 
 def updateCheck():
@@ -50,6 +62,7 @@ def timeCheck():
 	global time
 	global storeOpen
 	global queue
+	global PRkick
 
 	if time.current == 1080:
 		print("Dörren stängdes 18:00.")
@@ -58,6 +71,11 @@ def timeCheck():
 	if not queue.isEmpty():
 		queue.queueTime += 1
 
+	if PRkick > 20:
+		PRkick -= 1
+	elif PRkick < 20:
+		PRkick += 1
+
 
 
 time = classes.time() # kl 9:00
@@ -65,6 +83,7 @@ kundnr = 1
 storeOpen = True
 beingServed = False
 queue = classes.queue()
+PRkick = 20
 
 while True:
 
