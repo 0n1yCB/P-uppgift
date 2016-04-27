@@ -5,12 +5,12 @@ class time():
 		self.current = 540
 
 	def get(self):
-		timme = str(self.current//60)
-		minut = str(self.current%60)
-		if len(minut) is 1:
-			minut = "0" + minut
+		hour = str(self.current//60)
+		minute = str(self.current%60)
+		if len(minute) is 1:
+			minute = "0" + minute
 
-		return str("Kl. " + str(timme) + ":" + minut)
+		return str("Kl. " + str(hour) + ":" + minute)
 
 	def __str__(self):
 		hour = str(self.current//60)
@@ -23,19 +23,21 @@ class time():
 		return str("Kl. " + str(hour) + ":" + minute)
 
 class person():
-	def __init__(self, custNo = 0, consumedTime = 0):
+	def __init__(self, custNo = 0, enterQueue = 0):
 		def noErrands():
 			errands = 1
 			while random.randrange(0,2) == 1:
 				errands += 1
 			return errands
+			
 		def isRobber():
 			return random.randrange(0,1000) == 0
 
 		self.errands = noErrands()
 		self.kundnr = custNo
-		self.consumedTime = consumedTime
+		self.consumedTime = 0
 		self.isRobber = isRobber()
+		self.enterQueue = enterQueue
 
 	def canLeave(self):
 		return self.consumedTime >= 2*self.errands

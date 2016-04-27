@@ -3,42 +3,40 @@
 import classes
 import time
 import random
+from time import sleep
 
-def enterCustomer():
-	global beingServed
-	global kundnr
-	global customer
-	global storeOpen
-	global queue
-	global PRkick
+def enterCustomer(beingServed, kundnr, customer, storeOpen, queue, PRkick):
 
 	def probGen(maxno):
 		return random.randrange(0,maxno) == 0
 
 	if probGen(100//PRkick) and storeOpen:														# kollar varje minut om en nu kund kommer in
-		newCustomer = classes.person(kundnr)
+		newCustomer = classes.person(kundnr, time.current)
 		if newCustomer.isRobber:
 			print(time, "Butiken rånas! Kön töms.")
 			queue.empty()
-			if probGen(random.randrange(1,20)):
+			if probGen(random.randrange(1,5)):
 				PRkick = 51
 				print("Fru Franco besegrade rånaren! Hype!")
 			else:
 				print("Mörp. Fru Franco blev besegrad. rip.")
 				PRkick = 4
+			sleep(5)
 
 		if queue.isEmpty() and not beingServed:
 			customer = newCustomer
 			customer.consumedTime = -1
-			print(time , "kommer kund" , customer.kundnr , "in och blir genast betjänad.")
+#			print(time , "kommer kund" , customer.kundnr , "in och blir genast betjänad.")
 			beingServed = True
 
 		else:												# annars ställs personen i kön
 			queue.put(newCustomer)
-			print(time , "kommer kund" , kundnr-1 , "in och ställer sig i kön som nr." , queue.length)
+#			print(time , "kommer kund" , kundnr , "in och ställer sig i kön som nr." , queue.length)
+
 
 		kundnr += 1
 
+	return beingServed, kundnr, customer, storeOpen, queue, PRkick
 
 def updateCheck():
 	global beingServed
@@ -54,6 +52,10 @@ def updateCheck():
 				print(time , "går kund" , customer.kundnr , "och kund" , customer.kundnr+1 , "blir betjänad.")
 				customer = None
 				customer = queue.get()
+				queueTime = time.current - customer.enterQueue
+				#print(queueTime)
+				queue.queueTime += queueTime
+
 			else:
 				print(time , "går kund", customer.kundnr)
 				beingServed = False
@@ -68,15 +70,10 @@ def timeCheck():
 		print("Dörren stängdes 18:00.")
 		storeOpen = False
 
-	if not queue.isEmpty():
-		queue.queueTime += 1
-
 	if PRkick > 20:
 		PRkick -= 1
 	elif PRkick < 20:
 		PRkick += 1
-
-
 
 time = classes.time() # kl 9:00
 kundnr = 1
